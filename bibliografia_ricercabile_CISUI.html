@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliografia Ricercabile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #9d2235;
+            color: white;
+            padding: 30px 30px;
+            border-bottom: 3px solid #7a1a29;
+        }
+        
+        h1 {
+            font-size: 1.6em;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+        
+        .subtitle {
+            opacity: 0.95;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        
+        .search-section {
+            padding: 25px;
+            background: #fafafa;
+            border-bottom: 2px solid #9d2235;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            font-size: 14px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+        
+        #searchInput:focus {
+            outline: none;
+            border-color: #9d2235;
+            box-shadow: 0 0 0 3px rgba(157, 34, 53, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9d2235;
+            font-size: 16px;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+        
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: all 0.3s;
+            font-family: Georgia, 'Times New Roman', serif;
+            background: white;
+        }
+        
+        .filter-group select:focus {
+            outline: none;
+            border-color: #9d2235;
+        }
+        
+        .results-info {
+            padding: 15px 30px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #9d2235;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .results-left {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .style-toggle {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        
+        .style-toggle label {
+            color: #666;
+        }
+        
+        .style-toggle select {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: Georgia, 'Times New Roman', serif;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .download-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .download-btn {
+            background: #9d2235;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: Georgia, 'Times New Roman', serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #7a1a29;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(157, 34, 53, 0.3);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .bibliography-list {
+            padding: 20px 30px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .bib-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-left: 4px solid #9d2235;
+            border-radius: 0;
+            padding: 15px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        
+        .bib-item:hover {
+            border-left-color: #7a1a29;
+            box-shadow: 0 2px 8px rgba(157, 34, 53, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .bib-title {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+        
+        .bib-authors {
+            color: #9d2235;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 0.95em;
+        }
+        
+        .bib-details {
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+        
+        .bib-chicago {
+            color: #333;
+            font-size: 0.95em;
+            line-height: 1.6;
+            font-family: Georgia, 'Times New Roman', serif;
+            text-indent: -2em;
+            padding-left: 2em;
+        }
+        
+        .bib-chicago i {
+            font-style: italic;
+        }
+        
+        .bib-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .tag {
+            background: #f5e6e9;
+            color: #9d2235;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            font-weight: 500;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .no-results-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .results-info {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .results-left {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+                gap: 8px;
+            }
+            
+            .style-toggle {
+                width: 100%;
+            }
+            
+            .style-toggle select {
+                flex: 1;
+            }
+            
+            .download-buttons {
+                width: 100%;
+            }
+            
+            .download-btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Bibliografia Ricercabile</h1>
+            <p class="subtitle">Cerca tra libri, articoli e pubblicazioni</p>
+        </div>
+        
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Cerca per titolo, autore, parole chiave...">
+                <span class="search-icon">🔍</span>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Cerca in</label>
+                    <select id="searchFieldFilter">
+                        <option value="all">Tutti i campi</option>
+                        <option value="title">Solo titolo</option>
+                        <option value="author">Solo autore</option>
+                        <option value="keywords">Solo parole chiave</option>
+                        <option value="tags">Solo tag</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Tipo di documento</label>
+                    <select id="typeFilter">
+                        <option value="">Tutti</option>
+                        <option value="Articolo in rivista">Articolo in rivista</option>
+                        <option value="Articolo in volume">Articolo in volume</option>
+                        <option value="Volume miscellaneo">Volume miscellaneo</option>
+                        <option value="Monografia">Monografia</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Anno</label>
+                    <select id="yearFilter">
+                        <option value="">Tutti</option>
+                        <option value="2010">2010</option>
+                        <option value="2008">2008</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Ordina per</label>
+                    <select id="sortFilter">
+                        <option value="year-desc">Anno (più recente)</option>
+                        <option value="year-asc">Anno (più vecchio)</option>
+                        <option value="author">Autore (A-Z)</option>
+                        <option value="title">Titolo (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-info">
+            <div class="results-left">
+                <span id="resultsCount">13 risultati trovati</span>
+                <div class="style-toggle">
+                    <label>Stile:</label>
+                    <select id="citationStyle" onchange="renderBibliography(filteredData)">
+                        <option value="standard">Standard</option>
+                        <option value="chicago">Chicago Manual of Style</option>
+                    </select>
+                </div>
+            </div>
+            <div class="download-buttons">
+                <button class="download-btn" onclick="downloadCSV()">⬇ Scarica CSV</button>
+                <button class="download-btn" onclick="downloadTXT()">⬇ Scarica TXT</button>
+            </div>
+        </div>
+        
+        <div class="bibliography-list" id="bibliographyList">
+            <!-- I risultati verranno inseriti qui dinamicamente -->
+        </div>
+    </div>
+
+    <script>
+        // Dati della bibliografia CISUI
+        const bibliographyData = [
+            {
+                title: "Università e impresa",
+                authors: "Lacaita, Carlo G.",
+                year: 2008,
+                type: "Articolo in rivista",
+                publisher: "«Annali di storia delle università italiane»",
+                pages: "9-21",
+                tags: ["Università"],
+                keywords: "università e impresa lacaita carlo g.",
+                extra_info: "Vol. 12"
+            },
+            {
+                title: "Una sede sofferta. Dalla preesistenza a un nuovo insediamento urbano",
+                authors: "Ricci, Giuliana",
+                year: 2008,
+                type: "Articolo in rivista",
+                publisher: "«Annali di storia delle università italiane»",
+                pages: "27-44",
+                tags: ["Architettura"],
+                keywords: "una sede sofferta dalla preesistenza a un nuovo insediamento urbano ricci giuliana",
+                extra_info: "Vol. 12"
+            },
+            {
+                title: "Il Politecnico alla Bovisa e la rinascita del quartiere operaio (1970-2008)",
+                authors: "Dezzi Bardeschi, Marco",
+                year: 2008,
+                type: "Articolo in rivista",
+                publisher: "«Annali di storia delle università italiane»",
+                pages: "59-74",
+                tags: ["Politecnico"],
+                keywords: "il politecnico alla bovisa e la rinascita del quartiere operaio 1970 2008 dezzi bardeschi marco",
+                extra_info: "Vol. 12"
+            },
+            {
+                title: "Un campus virtuale",
+                authors: "Irace, Fulvio",
+                year: 2008,
+                type: "Articolo in rivista",
+                publisher: "«Annali di storia delle università italiane»",
+                pages: "45-58",
+                tags: ["Campus"],
+                keywords: "un campus virtuale irace fulvio",
+                extra_info: "Vol. 12"
+            },
+            {
+                title: "La genesi della questione ambientale e l'incipit sul Politecnico di Milano",
+                authors: "Sacchi, Evandro",
+                year: 2008,
+                type: "Articolo in rivista",
+                publisher: "«Annali di storia delle università italiane»",
+                pages: "75-100",
+                tags: ["Politecnico", "Ambiente"],
+                keywords: "la genesi della questione ambientale e l'incipit sul politecnico di milano sacchi evandro",
+                extra_info: "Vol. 12"
+            },
+            {
+                title: "Storia dell'Università di Sassari",
+                authors: "Mattone, Antonello",
+                year: 2010,
+                type: "Volume miscellaneo",
+                publisher: "Ilisso, Nuoro",
+                pages: "N/D",
+                tags: ["Università", "Storia"],
+                keywords: "storia dell'università di sassari mattone antonello",
+                extra_info: ""
+            },
+            {
+                title: "Collegi studenteschi a Roma nel Quattrocento. Gli Statuti della «Sapienza Nardina»",
+                authors: "Esposito, Anna; Frova, Carla",
+                year: 2008,
+                type: "Volume miscellaneo",
+                publisher: "Viella, Roma",
+                pages: "224",
+                tags: ["Vita studentesca", "Storia"],
+                keywords: "collegi studenteschi a roma nel quattrocento gli statuti della sapienza nardina esposito anna frova carla",
+                extra_info: ""
+            },
+            {
+                title: "Il miraggio della concordia. Documenti sull'architettura e la decorazione del Bo e del Liviano: Padova 1933-1943",
+                authors: "Nezzo, Marta",
+                year: 2008,
+                type: "Volume miscellaneo",
+                publisher: "Canova, Treviso",
+                pages: "900",
+                tags: ["Architettura", "Padova"],
+                keywords: "il miraggio della concordia documenti sull'architettura e la decorazione del bo e del liviano padova 1933 1943 nezzo marta",
+                extra_info: ""
+            },
+            {
+                title: "Il cantiere e i documenti: l'Archivio dei Consorzi edilizi 1903-1973",
+                authors: "Penzo Doria, Gianni",
+                year: 2008,
+                type: "Articolo in volume",
+                publisher: "Canova, Treviso",
+                pages: "29-39",
+                tags: ["Architettura"],
+                keywords: "il cantiere e i documenti l'archivio dei consorzi edilizi 1903 1973 penzo doria gianni",
+                extra_info: "In: Nezzo, Marta (a cura di), <i>Il miraggio della concordia. Documenti sull'architettura e la decorazione del Bo e del Liviano: Padova 1933-1943</i>, Treviso, Canova, 2008, pp. 900"
+            },
+            {
+                title: "Introduzione ai testi",
+                authors: "Bernabei, Franco",
+                year: 2008,
+                type: "Articolo in volume",
+                publisher: "Canova, Treviso",
+                pages: "41-89",
+                tags: ["Generale"],
+                keywords: "introduzione ai testi bernabei franco",
+                extra_info: "In: Nezzo, Marta (a cura di), <i>Il miraggio della concordia. Documenti sull'architettura e la decorazione del Bo e del Liviano: Padova 1933-1943</i>, Treviso, Canova, 2008, pp. 900"
+            },
+            {
+                title: "Storia e storie del cantiere",
+                authors: "Dal Piaz, Vittorio",
+                year: 2008,
+                type: "Articolo in volume",
+                publisher: "Canova, Treviso",
+                pages: "91-204",
+                tags: ["Storia", "Architettura"],
+                keywords: "storia e storie del cantiere dal piaz vittorio",
+                extra_info: "In: Nezzo, Marta (a cura di), <i>Il miraggio della concordia. Documenti sull'architettura e la decorazione del Bo e del Liviano: Padova 1933-1943</i>, Treviso, Canova, 2008, pp. 900"
+            },
+            {
+                title: "Il gioco delle parti nel teatro artistico universitario",
+                authors: "Nezzo, Marta",
+                year: 2008,
+                type: "Articolo in volume",
+                publisher: "Canova, Treviso",
+                pages: "205-269",
+                tags: ["Università", "Teatro"],
+                keywords: "il gioco delle parti nel teatro artistico universitario nezzo marta",
+                extra_info: "In: Nezzo, Marta (a cura di), <i>Il miraggio della concordia. Documenti sull'architettura e la decorazione del Bo e del Liviano: Padova 1933-1943</i>, Treviso, Canova, 2008, pp. 900"
+            },
+            {
+                title: "Lo spirito gregario. I gruppi universitari fascisti tra politica e propaganda (1930-1940)",
+                authors: "Duranti, Simone",
+                year: 2008,
+                type: "Monografia",
+                publisher: "Donzelli, Roma",
+                pages: "403",
+                tags: ["Università", "Fascismo"],
+                keywords: "lo spirito gregario i gruppi universitari fascisti tra politica e propaganda 1930 1940 duranti simone",
+                extra_info: ""
+            }
+        ];
+
+        let filteredData = [...bibliographyData];
+
+        function formatChicagoStyle(item) {
+            // Chicago Manual of Style (17th edition) - Note and Bibliography format
+            let citation = '';
+            
+            // Formatta autore: Cognome, Nome
+            let author = item.authors;
+            
+            if (item.type === "Articolo in rivista") {
+                // Articolo in rivista: Autore. "Titolo articolo." Rivista volume (anno): pagine.
+                citation += `${author}. "${item.title}." `;
+                citation += `<i>${item.publisher.replace(/«|»/g, '')}</i> `;
+                
+                // Estrai volume se presente in extra_info
+                if (item.extra_info && item.extra_info.includes('Vol.')) {
+                    const volMatch = item.extra_info.match(/Vol\. (\d+)/);
+                    if (volMatch) {
+                        citation += `${volMatch[1]}, `;
+                    }
+                }
+                
+                citation += `(${item.year})`;
+                if (item.pages !== 'N/D') {
+                    citation += `: ${item.pages}`;
+                }
+                citation += '.';
+                
+            } else if (item.type === "Articolo in volume") {
+                // Articolo in volume: Autore. "Titolo articolo." In Titolo Volume, a cura di Curatore, pagine. Luogo: Editore, anno.
+                citation += `${author}. "${item.title}." `;
+                
+                // Estrai info dal extra_info
+                if (item.extra_info) {
+                    const cleanInfo = item.extra_info.replace(/<[^>]*>/g, ''); // Rimuovi tag HTML
+                    const inMatch = cleanInfo.match(/In: (.+)/);
+                    if (inMatch) {
+                        citation += `In ${inMatch[1]}`;
+                    }
+                }
+                
+                if (item.pages !== 'N/D') {
+                    citation += `, ${item.pages}`;
+                }
+                citation += '.';
+                
+            } else if (item.type === "Volume miscellaneo" || item.type === "Monografia") {
+                // Libro/Volume: Autore/Curatore. Titolo. Luogo: Editore, anno.
+                const isCurated = item.authors.includes('(a cura di)');
+                
+                citation += `${author}. `;
+                citation += `<i>${item.title}</i>. `;
+                
+                // Aggiungi luogo ed editore
+                const publisherParts = item.publisher.split(',').map(p => p.trim());
+                if (publisherParts.length >= 2) {
+                    citation += `${publisherParts[1]}: ${publisherParts[0]}, `;
+                } else {
+                    citation += `${item.publisher}, `;
+                }
+                
+                citation += `${item.year}.`;
+            }
+            
+            return citation;
+        }
+
+        function renderBibliography(data) {
+            const listContainer = document.getElementById('bibliographyList');
+            const resultsCount = document.getElementById('resultsCount');
+            const citationStyle = document.getElementById('citationStyle').value;
+            
+            resultsCount.textContent = `${data.length} risultati trovati`;
+            
+            if (data.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">📭</div>
+                        <h3>Nessun risultato trovato</h3>
+                        <p>Prova a modificare i filtri di ricerca</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (citationStyle === 'chicago') {
+                // Visualizzazione Chicago Style
+                listContainer.innerHTML = data.map(item => `
+                    <div class="bib-item">
+                        <div class="bib-chicago">${formatChicagoStyle(item)}</div>
+                        <div class="bib-tags" style="margin-top: 10px;">
+                            ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                // Visualizzazione standard
+                listContainer.innerHTML = data.map(item => `
+                    <div class="bib-item">
+                        <div class="bib-title">${item.title}</div>
+                        <div class="bib-authors">${item.authors}</div>
+                        <div class="bib-details">
+                            ${item.type} • ${item.year} • ${item.publisher}${item.pages !== 'N/D' ? ' • ' + item.pages + ' pagine' : ''}${item.extra_info ? ' • ' + item.extra_info : ''}
+                        </div>
+                        <div class="bib-tags">
+                            ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const searchField = document.getElementById('searchFieldFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            
+            // Filtra i dati
+            filteredData = bibliographyData.filter(item => {
+                let matchesSearch = false;
+                
+                if (!searchTerm) {
+                    matchesSearch = true;
+                } else {
+                    // Cerca nel campo selezionato
+                    switch(searchField) {
+                        case 'title':
+                            matchesSearch = item.title.toLowerCase().includes(searchTerm);
+                            break;
+                        case 'author':
+                            matchesSearch = item.authors.toLowerCase().includes(searchTerm);
+                            break;
+                        case 'keywords':
+                            matchesSearch = item.keywords.toLowerCase().includes(searchTerm);
+                            break;
+                        case 'tags':
+                            matchesSearch = item.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+                            break;
+                        case 'all':
+                        default:
+                            matchesSearch = 
+                                item.title.toLowerCase().includes(searchTerm) ||
+                                item.authors.toLowerCase().includes(searchTerm) ||
+                                item.keywords.toLowerCase().includes(searchTerm) ||
+                                item.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+                            break;
+                    }
+                }
+                
+                const matchesType = !typeFilter || item.type === typeFilter;
+                const matchesYear = !yearFilter || item.year.toString() === yearFilter;
+                
+                return matchesSearch && matchesType && matchesYear;
+            });
+            
+            // Ordina i dati
+            switch(sortFilter) {
+                case 'year-desc':
+                    filteredData.sort((a, b) => b.year - a.year);
+                    break;
+                case 'year-asc':
+                    filteredData.sort((a, b) => a.year - b.year);
+                    break;
+                case 'author':
+                    filteredData.sort((a, b) => a.authors.localeCompare(b.authors));
+                    break;
+                case 'title':
+                    filteredData.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+            }
+            
+            renderBibliography(filteredData);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('searchFieldFilter').addEventListener('change', applyFilters);
+        document.getElementById('typeFilter').addEventListener('change', applyFilters);
+        document.getElementById('yearFilter').addEventListener('change', applyFilters);
+        document.getElementById('sortFilter').addEventListener('change', applyFilters);
+
+        // Inizializza la visualizzazione
+        renderBibliography(bibliographyData);
+        
+        // Funzioni per il download
+        function downloadCSV() {
+            // Prepara i dati CSV
+            let csv = 'Titolo,Autori,Anno,Tipo,Editore,Pagine,Tag,Info aggiuntive\n';
+            
+            filteredData.forEach(item => {
+                // Escape delle virgole e delle virgolette
+                const escapeCSV = (str) => {
+                    if (typeof str !== 'string') str = String(str);
+                    // Rimuovi tag HTML
+                    str = str.replace(/<[^>]*>/g, '');
+                    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                        return '"' + str.replace(/"/g, '""') + '"';
+                    }
+                    return str;
+                };
+                
+                csv += [
+                    escapeCSV(item.title),
+                    escapeCSV(item.authors),
+                    item.year,
+                    escapeCSV(item.type),
+                    escapeCSV(item.publisher),
+                    escapeCSV(item.pages),
+                    escapeCSV(item.tags.join('; ')),
+                    escapeCSV(item.extra_info || '')
+                ].join(',') + '\n';
+            });
+            
+            // Crea il file e scarica
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'bibliografia_cisui_' + new Date().toISOString().split('T')[0] + '.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function downloadTXT() {
+            const citationStyle = document.getElementById('citationStyle').value;
+            
+            // Prepara i dati TXT
+            let txt = 'BIBLIOGRAFIA CISUI\n';
+            txt += 'Esportata il: ' + new Date().toLocaleDateString('it-IT') + '\n';
+            txt += 'Formato: ' + (citationStyle === 'chicago' ? 'Chicago Manual of Style (17th ed.)' : 'Standard') + '\n';
+            txt += '='.repeat(80) + '\n\n';
+            
+            if (citationStyle === 'chicago') {
+                // Formato Chicago
+                filteredData.forEach((item, index) => {
+                    const chicagoCitation = formatChicagoStyle(item).replace(/<[^>]*>/g, ''); // Rimuovi tag HTML
+                    txt += `${index + 1}. ${chicagoCitation}\n\n`;
+                });
+            } else {
+                // Formato standard
+                filteredData.forEach((item, index) => {
+                    txt += `${index + 1}. ${item.authors} (${item.year})\n`;
+                    txt += `   ${item.title}\n`;
+                    txt += `   ${item.type} • ${item.publisher}`;
+                    if (item.pages !== 'N/D') {
+                        txt += ` • pp. ${item.pages}`;
+                    }
+                    txt += '\n';
+                    if (item.extra_info) {
+                        // Rimuovi tag HTML dal extra_info
+                        const cleanInfo = item.extra_info.replace(/<[^>]*>/g, '');
+                        txt += `   ${cleanInfo}\n`;
+                    }
+                    txt += `   Tag: ${item.tags.join(', ')}\n`;
+                    txt += '\n';
+                });
+            }
+            
+            txt += '='.repeat(80) + '\n';
+            txt += `Totale risultati: ${filteredData.length}\n`;
+            
+            // Crea il file e scarica
+            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'bibliografia_cisui_' + new Date().toISOString().split('T')[0] + '.txt');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
