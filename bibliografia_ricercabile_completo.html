@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliografia CISUI - Sistema di Ricerca</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #9d2235;
+            color: white;
+            padding: 20px 30px;
+            border-bottom: 3px solid #7a1a29;
+            position: relative;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .header-text {
+            flex: 1;
+        }
+        
+        .back-button {
+            background: white;
+            color: #9d2235;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: Georgia, 'Times New Roman', serif;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid white;
+        }
+        
+        .back-button:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            font-size: 1.6em;
+            margin-bottom: 5px;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+        
+        .subtitle {
+            opacity: 0.95;
+            font-size: 0.85em;
+            font-style: italic;
+        }
+        
+        .search-section {
+            padding: 25px;
+            background: #fafafa;
+            border-bottom: 2px solid #9d2235;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            font-size: 14px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+        
+        #searchInput:focus {
+            outline: none;
+            border-color: #9d2235;
+            box-shadow: 0 0 0 3px rgba(157, 34, 53, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9d2235;
+            font-size: 16px;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+        
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: all 0.3s;
+            font-family: Georgia, 'Times New Roman', serif;
+            background: white;
+        }
+        
+        .filter-group select:focus {
+            outline: none;
+            border-color: #9d2235;
+        }
+        
+        .results-info {
+            padding: 15px 30px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #9d2235;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .results-left {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .style-toggle {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        
+        .style-toggle label {
+            color: #666;
+        }
+        
+        .style-toggle select {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: Georgia, 'Times New Roman', serif;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .download-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .download-btn {
+            background: #9d2235;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: Georgia, 'Times New Roman', serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #7a1a29;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(157, 34, 53, 0.3);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .bibliography-list {
+            padding: 20px 30px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .bib-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-left: 4px solid #9d2235;
+            border-radius: 0;
+            padding: 15px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        
+        .bib-item:hover {
+            border-left-color: #7a1a29;
+            box-shadow: 0 2px 8px rgba(157, 34, 53, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .bib-title {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+        
+        .bib-authors {
+            color: #9d2235;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 0.95em;
+        }
+        
+        .bib-details {
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+        
+        .bib-chicago {
+            color: #333;
+            font-size: 0.95em;
+            line-height: 1.6;
+            font-family: Georgia, 'Times New Roman', serif;
+            text-indent: -2em;
+            padding-left: 2em;
+        }
+        
+        .bib-chicago i {
+            font-style: italic;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .no-results-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9d2235;
+            font-size: 1.2em;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 60px 20px;
+            color: #d32f2f;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.4em;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .back-button {
+                width: 100%;
+                justify-content: center;
+                margin-top: 10px;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .results-info {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .results-left {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+                gap: 8px;
+            }
+            
+            .style-toggle {
+                width: 100%;
+            }
+            
+            .style-toggle select {
+                flex: 1;
+            }
+            
+            .download-buttons {
+                width: 100%;
+            }
+            
+            .download-btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-text">
+                    <div style="font-size: 0.85em; margin-bottom: 5px; opacity: 0.9;">
+                        Centro Interuniversitario Storia Università Italiane
+                    </div>
+                    <h1>📚 Bibliografia Ricercabile</h1>
+                    <p class="subtitle">Sistema di ricerca bibliografica del CISUI</p>
+                </div>
+                <a href="https://centri.unibo.it/cisui/it" class="back-button">
+                    ← Torna all'home page del CISUI
+                </a>
+            </div>
+        </div>
+        
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Cerca per titolo, autore, curatore...">
+                <span class="search-icon">🔍</span>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Cerca in</label>
+                    <select id="searchFieldFilter">
+                        <option value="all">Tutti i campi</option>
+                        <option value="title">Solo titolo</option>
+                        <option value="author">Solo autore/curatore</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Tipo di documento</label>
+                    <select id="typeFilter">
+                        <option value="">Tutti</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Anno</label>
+                    <select id="yearFilter">
+                        <option value="">Tutti</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Ordina per</label>
+                    <select id="sortFilter">
+                        <option value="year-desc">Anno (più recente)</option>
+                        <option value="year-asc">Anno (più vecchio)</option>
+                        <option value="author">Autore (A-Z)</option>
+                        <option value="title">Titolo (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-info">
+            <div class="results-left">
+                <span id="resultsCount">Caricamento...</span>
+                <div class="style-toggle">
+                    <label>Stile:</label>
+                    <select id="citationStyle" onchange="renderBibliography(filteredData)">
+                        <option value="standard">Standard</option>
+                        <option value="chicago">Chicago Manual of Style</option>
+                    </select>
+                </div>
+            </div>
+            <div class="download-buttons">
+                <button class="download-btn" onclick="downloadCSV()">⬇ Scarica CSV</button>
+                <button class="download-btn" onclick="downloadTXT()">⬇ Scarica TXT</button>
+            </div>
+        </div>
+        
+        <div class="bibliography-list" id="bibliographyList">
+            <div class="loading">📚 Caricamento bibliografia in corso...</div>
+        </div>
+    </div>
+
+    <script>
+        let bibliographyData = [];
+        let filteredData = [];
+
+        async function loadCSV() {
+            try {
+                const response = await fetch('bibliografia_cisui_completo.csv');
+                if (!response.ok) {
+                    throw new Error('Impossibile caricare il file CSV');
+                }
+                
+                const csvText = await response.text();
+                bibliographyData = parseCSV(csvText);
+                populateFilters();
+                filteredData = [...bibliographyData];
+                renderBibliography(filteredData);
+                
+            } catch (error) {
+                console.error('Errore nel caricamento:', error);
+                document.getElementById('bibliographyList').innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ Errore nel caricamento</h3>
+                        <p>Impossibile caricare il file bibliografia_cisui_completo.csv</p>
+                        <p style="font-size: 0.9em; margin-top: 10px;">Assicurati che il file CSV sia nella stessa cartella del file HTML.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const headers = parseCSVLine(lines[0]);
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim() === '') continue;
+                
+                const values = parseCSVLine(lines[i]);
+                if (values.length < headers.length) continue;
+                
+                const item = {};
+                headers.forEach((header, index) => {
+                    item[header] = values[index] || '';
+                });
+                
+                data.push(item);
+            }
+            
+            return data;
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                const nextChar = line[i + 1];
+                
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current.trim());
+            return result;
+        }
+
+        function populateFilters() {
+            const types = [...new Set(bibliographyData.map(item => item.tipologia))].filter(t => t).sort();
+            const typeFilter = document.getElementById('typeFilter');
+            typeFilter.innerHTML = '<option value="">Tutti</option>';
+            types.forEach(type => {
+                typeFilter.innerHTML += `<option value="${type}">${type}</option>`;
+            });
+            
+            const years = [...new Set(bibliographyData.map(item => item.anno))].filter(y => y).sort((a, b) => b - a);
+            const yearFilter = document.getElementById('yearFilter');
+            yearFilter.innerHTML = '<option value="">Tutti</option>';
+            years.forEach(year => {
+                yearFilter.innerHTML += `<option value="${year}">${year}</option>`;
+            });
+        }
+
+        function formatChicagoStyle(item) {
+            let citation = '';
+            
+            if (item.tipologia === "articolo in rivista") {
+                // Autore. "Titolo." Rivista annata (anno): pagine.
+                citation += `${item.autore_saggio}. "${item.titolo_saggio}." `;
+                citation += `<i>${item.rivista.replace(/«|»/g, '')}</i> `;
+                if (item.annata) {
+                    citation += `${item.annata}, `;
+                }
+                citation += `(${item.anno})`;
+                if (item.pagine) {
+                    citation += `: ${item.pagine}`;
+                }
+                citation += '.';
+                
+            } else if (item.tipologia === "articolo in volume miscellaneo") {
+                // Autore saggio. "Titolo saggio." In Curatore (a cura di), Titolo volume, luogo: editore, anno, pagine.
+                citation += `${item.autore_saggio}. "${item.titolo_saggio}." `;
+                citation += `In ${item.autore_curatore_volume}`;
+                if (item.precisazione_curatore) {
+                    citation += ` (${item.precisazione_curatore.trim()})`;
+                }
+                citation += `, <i>${item.titolo_volume}</i>`;
+                if (item.luogo && item.editore) {
+                    citation += `, ${item.luogo}: ${item.editore}`;
+                } else if (item.editore) {
+                    citation += `, ${item.editore}`;
+                }
+                citation += `, ${item.anno}`;
+                if (item.pagine) {
+                    citation += `, ${item.pagine}`;
+                }
+                citation += '.';
+                
+            } else if (item.tipologia === "volume miscellaneo") {
+                // Curatore (a cura di). Titolo. Luogo: Editore, anno.
+                citation += `${item.autore_curatore_volume}`;
+                if (item.precisazione_curatore) {
+                    citation += ` (${item.precisazione_curatore.trim()})`;
+                }
+                citation += `. <i>${item.titolo_volume}</i>. `;
+                if (item.luogo && item.editore) {
+                    citation += `${item.luogo}: ${item.editore}`;
+                } else if (item.editore) {
+                    citation += `${item.editore}`;
+                }
+                citation += `, ${item.anno}.`;
+                
+            } else if (item.tipologia === "monografia") {
+                // Autore. Titolo. Luogo: Editore, anno.
+                citation += `${item.autore_curatore_volume}. `;
+                citation += `<i>${item.titolo_volume}</i>. `;
+                if (item.luogo && item.editore) {
+                    citation += `${item.luogo}: ${item.editore}`;
+                } else if (item.editore) {
+                    citation += `${item.editore}`;
+                }
+                citation += `, ${item.anno}.`;
+            }
+            
+            return citation;
+        }
+
+        function renderBibliography(data) {
+            const listContainer = document.getElementById('bibliographyList');
+            const resultsCount = document.getElementById('resultsCount');
+            const citationStyle = document.getElementById('citationStyle').value;
+            
+            resultsCount.textContent = `${data.length} risultati trovati`;
+            
+            if (data.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">📭</div>
+                        <h3>Nessun risultato trovato</h3>
+                        <p>Prova a modificare i filtri di ricerca</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (citationStyle === 'chicago') {
+                listContainer.innerHTML = data.map(item => `
+                    <div class="bib-item">
+                        <div class="bib-chicago">${formatChicagoStyle(item)}</div>
+                    </div>
+                `).join('');
+            } else {
+                listContainer.innerHTML = data.map(item => {
+                    // Determina autore e titolo in base alla tipologia
+                    let author = '';
+                    let title = '';
+                    let details = [];
+                    
+                    if (item.tipologia === 'articolo in rivista') {
+                        author = item.autore_saggio;
+                        title = item.titolo_saggio;
+                        details.push(item.rivista);
+                        if (item.annata) details.push(`Vol. ${item.annata}`);
+                        if (item.pagine) details.push(`pp. ${item.pagine}`);
+                    } else if (item.tipologia === 'articolo in volume miscellaneo') {
+                        author = item.autore_saggio;
+                        title = item.titolo_saggio;
+                        let volumeInfo = `In: ${item.autore_curatore_volume}`;
+                        if (item.precisazione_curatore) {
+                            volumeInfo += ` (${item.precisazione_curatore.trim()})`;
+                        }
+                        volumeInfo += `, <i>${item.titolo_volume}</i>`;
+                        if (item.luogo && item.editore) {
+                            volumeInfo += `, ${item.luogo}, ${item.editore}`;
+                        }
+                        if (item.pagine) {
+                            volumeInfo += `, pp. ${item.pagine}`;
+                        }
+                        details.push(volumeInfo);
+                    } else {
+                        author = item.autore_curatore_volume;
+                        if (item.precisazione_curatore) {
+                            author += ` (${item.precisazione_curatore.trim()})`;
+                        }
+                        title = item.titolo_volume;
+                        if (item.editore) details.push(item.editore);
+                        if (item.luogo) details.push(item.luogo);
+                        if (item.pagine) details.push(`${item.pagine} pp.`);
+                    }
+                    
+                    return `
+                        <div class="bib-item">
+                            <div class="bib-title">${title}</div>
+                            <div class="bib-authors">${author}</div>
+                            <div class="bib-details">
+                                ${item.tipologia} • ${item.anno}${details.length > 0 ? ' • ' + details.join(' • ') : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const searchField = document.getElementById('searchFieldFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            
+            filteredData = bibliographyData.filter(item => {
+                let matchesSearch = false;
+                
+                if (!searchTerm) {
+                    matchesSearch = true;
+                } else {
+                    const searchableText = [
+                        item.autore_saggio,
+                        item.titolo_saggio,
+                        item.autore_curatore_volume,
+                        item.titolo_volume,
+                        item.rivista
+                    ].join(' ').toLowerCase();
+                    
+                    switch(searchField) {
+                        case 'title':
+                            matchesSearch = (item.titolo_saggio + ' ' + item.titolo_volume).toLowerCase().includes(searchTerm);
+                            break;
+                        case 'author':
+                            matchesSearch = (item.autore_saggio + ' ' + item.autore_curatore_volume).toLowerCase().includes(searchTerm);
+                            break;
+                        case 'all':
+                        default:
+                            matchesSearch = searchableText.includes(searchTerm);
+                            break;
+                    }
+                }
+                
+                const matchesType = !typeFilter || item.tipologia === typeFilter;
+                const matchesYear = !yearFilter || item.anno.toString() === yearFilter;
+                
+                return matchesSearch && matchesType && matchesYear;
+            });
+            
+            switch(sortFilter) {
+                case 'year-desc':
+                    filteredData.sort((a, b) => b.anno - a.anno);
+                    break;
+                case 'year-asc':
+                    filteredData.sort((a, b) => a.anno - b.anno);
+                    break;
+                case 'author':
+                    filteredData.sort((a, b) => {
+                        const authorA = a.autore_saggio || a.autore_curatore_volume;
+                        const authorB = b.autore_saggio || b.autore_curatore_volume;
+                        return authorA.localeCompare(authorB);
+                    });
+                    break;
+                case 'title':
+                    filteredData.sort((a, b) => {
+                        const titleA = a.titolo_saggio || a.titolo_volume;
+                        const titleB = b.titolo_saggio || b.titolo_volume;
+                        return titleA.localeCompare(titleB);
+                    });
+                    break;
+            }
+            
+            renderBibliography(filteredData);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('searchFieldFilter').addEventListener('change', applyFilters);
+        document.getElementById('typeFilter').addEventListener('change', applyFilters);
+        document.getElementById('yearFilter').addEventListener('change', applyFilters);
+        document.getElementById('sortFilter').addEventListener('change', applyFilters);
+
+        function downloadCSV() {
+            let csv = 'tipologia,autore_saggio,titolo_saggio,autore_curatore_volume,precisazione_curatore,titolo_volume,luogo,editore,anno,rivista,annata,pagine\n';
+            
+            filteredData.forEach(item => {
+                const escapeCSV = (str) => {
+                    if (typeof str !== 'string') str = String(str);
+                    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                        return '"' + str.replace(/"/g, '""') + '"';
+                    }
+                    return str;
+                };
+                
+                csv += [
+                    escapeCSV(item.tipologia || ''),
+                    escapeCSV(item.autore_saggio || ''),
+                    escapeCSV(item.titolo_saggio || ''),
+                    escapeCSV(item.autore_curatore_volume || ''),
+                    escapeCSV(item.precisazione_curatore || ''),
+                    escapeCSV(item.titolo_volume || ''),
+                    escapeCSV(item.luogo || ''),
+                    escapeCSV(item.editore || ''),
+                    item.anno || '',
+                    escapeCSV(item.rivista || ''),
+                    item.annata || '',
+                    escapeCSV(item.pagine || '')
+                ].join(',') + '\n';
+            });
+            
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'bibliografia_cisui_' + new Date().toISOString().split('T')[0] + '.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function downloadTXT() {
+            const citationStyle = document.getElementById('citationStyle').value;
+            
+            let txt = 'BIBLIOGRAFIA CISUI\n';
+            txt += 'Esportata il: ' + new Date().toLocaleDateString('it-IT') + '\n';
+            txt += 'Formato: ' + (citationStyle === 'chicago' ? 'Chicago Manual of Style (17th ed.)' : 'Standard') + '\n';
+            txt += '='.repeat(80) + '\n\n';
+            
+            filteredData.forEach((item, index) => {
+                if (citationStyle === 'chicago') {
+                    const chicagoCitation = formatChicagoStyle(item).replace(/<[^>]*>/g, '');
+                    txt += `${index + 1}. ${chicagoCitation}\n\n`;
+                } else {
+                    const author = item.autore_saggio || item.autore_curatore_volume || '';
+                    const title = item.titolo_saggio || item.titolo_volume || '';
+                    txt += `${index + 1}. ${author} (${item.anno})\n`;
+                    txt += `   ${title}\n`;
+                    txt += `   ${item.tipologia}\n\n`;
+                }
+            });
+            
+            txt += '='.repeat(80) + '\n';
+            txt += `Totale risultati: ${filteredData.length}\n`;
+            
+            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'bibliografia_cisui_' + new Date().toISOString().split('T')[0] + '.txt');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        loadCSV();
+    </script>
+</body>
+</html>
